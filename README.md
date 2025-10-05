@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# PlantCare
-=======
 # Green Thumb Guardian - Smart Plant Care Application
 
 A comprehensive plant care application featuring AI-powered plant identification, intelligent chatbot assistance, store locator, and plant health monitoring.
@@ -200,3 +197,4 @@ For support and questions:
 
 **Note**: This application requires internet connectivity and valid API keys for full functionality. Some features may work with limited functionality if certain APIs are unavailable.
 >>>>>>> e7392ce (first)
+
