@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Identification - Green Thumb Guardian</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="js/api-config.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script src="js/theme-lang.js"></script>
+    <script src="js/test-integrations.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .upload-box {
+            border: 2px dashed #d1d5db;
+            transition: all 0.3s ease;
+        }
+        .upload-box:hover {
+            border-color: #22c55e;
+        }
+        .result-card {
+            transition: all 0.3s ease;
+        }
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i data-feather="leaf" class="h-8 w-8 text-green-600"></i>
+                        <span class="ml-2 text-xl font-bold gradient-text">Green Thumb Guardian</span>
+                    </div>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:items-center md:space-x-8">
+                    <a href="index.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.home">Home</a>
+                    <a href="mygarden.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.garden">My Garden</a>
+                    <a href="plant-id.html" class="text-green-600 px-3 py-2 font-medium border-b-2 border-green-600" data-translate="nav.plantid">Plant ID</a>
+                    <a href="community.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.community">Community</a>
+                    <a href="plant-stores.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.stores">Stores</a>
+                    <div class="flex space-x-4">
+                        <a href="signin.html" class="px-4 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" data-translate="nav.signin">Sign In</a>
+                        <a href="signup.html" class="px-4 py-2 rounded-md text-sm font-medium text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700" data-translate="nav.signup">Sign Up</a>
+                    </div>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none">
+                        <i data-feather="menu" class="h-6 w-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center mb-12">
+            <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                <span class="block gradient-text">Plant Identification</span>
+            </h1>
+            <p class="mt-3 max-w-2xl mx-auto text-base text-gray-600 sm:text-lg md:mt-5 md:text-xl">
+                Upload a photo of your plant and our AI will identify it instantly, providing detailed care instructions.
+            </p>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="bg-white shadow rounded-lg p-6 mb-8">
+            <div class="md:flex md:items-center md:justify-between">
+                <div class="md:w-1/2 md:pr-8 mb-6 md:mb-0">
+                    <h2 class="text-xl font-bold text-gray-900">Upload Your Plant Photo</h2>
+                    <p class="mt-2 text-gray-600">
+                        Take a clear photo of your plant's leaves, flowers, or overall shape for the most accurate identification.
+                    </p>
+                    <div class="mt-4">
+                        <ul class="list-disc pl-5 text-gray-600">
+                            <li class="mb-1">Place the plant against a neutral background</li>
+                            <li class="mb-1">Ensure good lighting</li>
+                            <li class="mb-1">Focus on distinctive features</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="md:w-1/2">
+                    <div class="upload-box rounded-lg bg-gray-50 p-8 text-center cursor-pointer">
+                        <input type="file" id="plant-upload" class="hidden" accept="image/*">
+                        <label for="plant-upload" class="cursor-pointer">
+                            <i data-feather="upload-cloud" class="h-12 w-12 text-gray-400 mx-auto"></i>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900">
+                                <span class="text-green-600">Click to upload</span> or drag and drop
+                            </h3>
+                            <p class="mt-1 text-xs text-gray-500">
+                                PNG, JPG, GIF up to 10MB
+                            </p>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" class="bg-white shadow rounded-lg p-6 mb-8 hidden">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Identification Results</h2>
+            <div id="results-content">
+                <!-- Results will be populated here -->
+            </div>
+        </div>
+
+        <!-- Example Results -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-xl font-bold text-gray-900">Example Identifications</h2>
+            <p class="mt-2 text-gray-600">
+                Here's what you can expect from our plant identification service.
+            </p>
+
+            <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <!-- Example 1 -->
+                <div class="result-card bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                    <img class="h-48 w-full object-cover" src="http://static.photos/nature/640x360/1" alt="Monstera plant">
+                    <div class="p-4">
+                        <h3 class="text-lg font-medium text-gray-900">Monstera Deliciosa</h3>
+                        <p class="mt-1 text-sm text-gray-600">Also known as Swiss Cheese Plant</p>
+                        <div class="mt-3 flex items-center">
+                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Indoor</span>
+                            <span class="ml-2 bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Tropical</span>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm text-gray-500">
+                            <i data-feather="droplet" class="h-4 w-4 text-blue-500 mr-1"></i>
+                            <span>Water every 1-2 weeks</span>
+                        </div>
+                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                            <i data-feather="sun" class="h-4 w-4 text-yellow-500 mr-1"></i>
+                            <span>Bright, indirect light</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 2 -->
+                <div class="result-card bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                    <img class="h-48 w-full object-cover" src="http://static.photos/nature/640x360/2" alt="Snake plant">
+                    <div class="p-4">
+                        <h3 class="text-lg font-medium text-gray-900">Sansevieria Trifasciata</h3>
+                        <p class="mt-1 text-sm text-gray-600">Also known as Snake Plant</p>
+                        <div class="mt-3 flex items-center">
+                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Indoor</span>
+                            <span class="ml-2 bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">Low Maintenance</span>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm text-gray-500">
+                            <i data-feather="droplet" class="h-4 w-4 text-blue-500 mr-1"></i>
+                            <span>Water every 2-3 weeks</span>
+                        </div>
+                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                            <i data-feather="sun" class="h-4 w-4 text-yellow-500 mr-1"></i>
+                            <span>Low to bright light</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 3 -->
+                <div class="result-card bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                    <img class="h-48 w-full object-cover" src="http://static.photos/nature/640x360/3" alt="Rose plant">
+                    <div class="p-4">
+                        <h3 class="text-lg font-medium text-gray-900">Rosa</h3>
+                        <p class="mt-1 text-sm text-gray-600">Common Garden Rose</p>
+                        <div class="mt-3 flex items-center">
+                            <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Outdoor</span>
+                            <span class="ml-2 bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded">Flowering</span>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm text-gray-500">
+                            <i data-feather="droplet" class="h-4 w-4 text-blue-500 mr-1"></i>
+                            <span>Water 2-3 times per week</span>
+                        </div>
+                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                            <i data-feather="sun" class="h-4 w-4 text-yellow-500 mr-1"></i>
+                            <span>Full sun (6+ hours)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Check Section -->
+        <div class="mt-8 bg-gradient-to-r from-green-600 to-green-700 rounded-lg shadow-lg overflow-hidden">
+            <div class="p-6 md:p-8 md:flex md:items-center md:justify-between">
+                <div class="md:w-2/3">
+                    <h2 class="text-xl font-bold text-white">Advanced Health Check</h2>
+                    <p class="mt-2 text-green-100 max-w-2xl">
+                        Our AI can analyze your plant's health from photos. Get alerts for common issues like overwatering, pests, or nutrient deficiencies.
+                    </p>
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <button class="px-4 py-2 bg-white text-green-700 font-medium rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        Try Health Check
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="md:flex md:items-center md:justify-between">
+                <div class="flex justify-center md:order-2 space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i data-feather="facebook" class="h-6 w-6"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i data-feather="instagram" class="h-6 w-6"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i data-feather="twitter" class="h-6 w-6"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i data-feather="youtube" class="h-6 w-6"></i>
+                    </a>
+                </div>
+                <div class="mt-8 md:mt-0 md:order-1">
+                    <p class="text-center text-base text-gray-400">
+                        &copy; 2023 Green Thumb Guardian. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chatbot Icon -->
+    <div class="fixed bottom-6 right-6">
+        <button class="h-14 w-14 rounded-full bg-green-600 shadow-lg flex items-center justify-center hover:bg-green-700">
+            <i data-feather="message-circle" class="h-6 w-6 text-white"></i>
+        </button>
+    </div>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+        
+        // Handle file upload with PlantNet API integration
+        const uploadInput = document.getElementById('plant-upload');
+        const uploadBox = document.querySelector('.upload-box');
+        const resultsSection = document.getElementById('results-section');
+        const resultsContent = document.getElementById('results-content');
+        
+        uploadInput.addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                
+                try {
+                    // Validate file
+                    window.APIUtils.validateImageFile(file);
+                    
+                    // Show preview
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        uploadBox.innerHTML = `
+                            <div class="relative">
+                                <img src="${event.target.result}" alt="Uploaded plant" class="h-full w-full object-cover rounded">
+                                <div class="absolute top-2 right-2 bg-green-600 text-white px-2 py-1 rounded text-xs">
+                                    Analyzing...
+                                </div>
+                            </div>
+                        `;
+                    };
+                    reader.readAsDataURL(file);
+                    
+                    // Call PlantNet API
+                    identifyPlant(file);
+                    
+                } catch (error) {
+                    window.APIUtils.showError('results-content', error.message);
+                    resultsSection.classList.remove('hidden');
+                }
+            }
+        });
+        
+        async function identifyPlant(file) {
+            try {
+                // Show loading state
+                resultsContent.innerHTML = '<div class="flex items-center justify-center p-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div><span class="ml-2">Identifying plant...</span></div>';
+                resultsSection.classList.remove('hidden');
+                
+                // Call PlantNet API
+                const results = await window.plantIdentifier.identifyPlant(file);
+                
+                if (results.success) {
+                    displayResults(results);
+                    
+                    // Show fallback notice if using fallback data
+                    if (results.fallback) {
+                        resultsContent.innerHTML = `
+                            <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
+                                <div class="flex items-center">
+                                    <i data-feather="info" class="h-5 w-5 mr-2"></i>
+                                    <span class="font-medium">Demo Mode:</span>
+                                    <span class="ml-2">Plant identification API is currently unavailable. Showing sample results for demonstration.</span>
+                                </div>
+                            </div>
+                            ${resultsContent.innerHTML}
+                        `;
+                        feather.replace();
+                    }
+                    
+                    // Update chatbot with results
+                    if (window.chatbot && window.chatbot.setIdentificationResults) {
+                        window.chatbot.setIdentificationResults(results);
+                    }
+                } else {
+                    resultsContent.innerHTML = `
+                        <div class="text-center p-8">
+                            <i data-feather="alert-circle" class="h-12 w-12 text-gray-400 mx-auto mb-4"></i>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">No matches found</h3>
+                            <p class="text-gray-600 mb-4">${results.message}</p>
+                            <div class="text-sm text-gray-500">
+                                <p>Tips for better identification:</p>
+                                <ul class="list-disc list-inside mt-2 space-y-1">
+                                    <li>Take a clear photo with good lighting</li>
+                                    <li>Focus on distinctive features like leaves or flowers</li>
+                                    <li>Ensure the plant fills most of the frame</li>
+                                    <li>Try different angles or parts of the plant</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('Plant identification error:', error);
+                resultsContent.innerHTML = `
+                    <div class="text-center p-8">
+                        <i data-feather="x-circle" class="h-12 w-12 text-red-400 mx-auto mb-4"></i>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Identification failed</h3>
+                        <p class="text-gray-600 mb-4">${error.message}</p>
+                        <button onclick="retryIdentification()" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                            Try Again
+                        </button>
+                    </div>
+                `;
+            }
+            
+            feather.replace();
+        }
+        
+        function displayResults(results) {
+            const resultsHTML = results.results.map((result, index) => `
+                <div class="result-card bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm mb-4">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex-1">
+                                <h3 class="text-xl font-bold text-gray-900">${result.scientificName}</h3>
+                                ${result.commonNames.length > 0 ? `<p class="text-gray-600 mt-1">Common names: ${result.commonNames.join(', ')}</p>` : ''}
+                                ${result.family ? `<p class="text-sm text-gray-500 mt-1">Family: ${result.family}</p>` : ''}
+                            </div>
+                            <div class="text-right">
+                                <div class="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
+                                    ${result.confidence}% match
+                                </div>
+                            </div>
+                        </div>
+                        
+                        ${result.description ? `
+                            <div class="mb-4">
+                                <h4 class="font-medium text-gray-900 mb-2">Description</h4>
+                                <p class="text-gray-600 text-sm">${result.description}</p>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <button onclick="askAboutPlant('${result.scientificName}')" class="px-3 py-1 bg-green-600 text-white text-sm rounded-md hover:bg-green-700">
+                                Ask About This Plant
+                            </button>
+                            <button onclick="saveToGarden('${result.scientificName}')" class="px-3 py-1 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700">
+                                Add to My Garden
+                            </button>
+                            ${result.gbifId ? `<button onclick="viewMoreInfo('${result.gbifId}')" class="px-3 py-1 bg-gray-600 text-white text-sm rounded-md hover:bg-gray-700">More Info</button>` : ''}
+                        </div>
+                        
+                        ${result.images && result.images.length > 0 ? `
+                            <div class="mt-4">
+                                <h4 class="font-medium text-gray-900 mb-2">Similar Images</h4>
+                                <div class="grid grid-cols-2 gap-2">
+                                    ${result.images.slice(0, 4).map(img => `
+                                        <img src="${img.url.s}" alt="Similar plant" class="w-full h-20 object-cover rounded border">
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+            
+            resultsContent.innerHTML = resultsHTML;
+        }
+        
+        // Global functions for result actions
+        window.askAboutPlant = function(plantName) {
+            if (window.chatbot) {
+                window.chatbot.open();
+                window.chatbot.inputContainer.value = `Tell me about ${plantName}`;
+                window.chatbot.sendMessage();
+            }
+        };
+        
+        window.saveToGarden = function(plantName) {
+            // In a real app, this would save to user's garden
+            alert(`Added ${plantName} to your garden! (This is a demo)`);
+        };
+        
+        window.viewMoreInfo = function(gbifId) {
+            window.open(`https://www.gbif.org/species/${gbifId}`, '_blank');
+        };
+        
+        window.retryIdentification = function() {
+            uploadInput.value = '';
+            uploadBox.innerHTML = `
+                <label for="plant-upload" class="cursor-pointer">
+                    <i data-feather="upload-cloud" class="h-12 w-12 text-gray-400 mx-auto"></i>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">
+                        <span class="text-green-600">Click to upload</span> or drag and drop
+                    </h3>
+                    <p class="mt-1 text-xs text-gray-500">
+                        PNG, JPG, GIF up to 10MB
+                    </p>
+                </label>
+            `;
+            resultsSection.classList.add('hidden');
+            feather.replace();
+        };
+        
+        // Drag and drop functionality
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadBox.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadBox.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadBox.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            uploadBox.classList.add('border-green-500');
+        }
+        
+        function unhighlight() {
+            uploadBox.classList.remove('border-green-500');
+        }
+        
+        uploadBox.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            uploadInput.files = files;
+            const event = new Event('change');
+            uploadInput.dispatchEvent(event);
+        }
+    </script>
+</body>
+</html>

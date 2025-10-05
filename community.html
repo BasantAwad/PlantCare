@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community - Green Thumb Guardian</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="js/api-config.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script src="js/theme-lang.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900">
+    <!-- Navigation -->
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i data-feather="leaf" class="h-8 w-8 text-green-600"></i>
+                        <a href="index.html" class="ml-2 text-xl font-bold gradient-text">Green Thumb Guardian</a>
+                    </div>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:items-center md:space-x-8">
+                    <a href="index.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.home">Home</a>
+                    <a href="mygarden.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.garden">My Garden</a>
+                    <a href="plant-id.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.plantid">Plant ID</a>
+                    <a href="community.html" class="text-green-600 px-3 py-2 font-medium border-b-2 border-green-600" data-translate="nav.community">Community</a>
+                    <a href="plant-stores.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.stores">Stores</a>
+                    <div class="flex space-x-4">
+                        <a href="signin.html" class="px-4 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" data-translate="nav.signin">Sign In</a>
+                        <a href="signup.html" class="px-4 py-2 rounded-md text-sm font-medium text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700" data-translate="nav.signup">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Community Header -->
+    <div class="py-12 bg-white/80 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:text-center">
+                <h2 class="text-base text-green-600 font-semibold tracking-wide uppercase">Community</h2>
+                <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+                    Connect with Plant Enthusiasts
+                </p>
+                <p class="mt-4 max-w-2xl text-xl text-gray-500 dark:text-gray-300 lg:mx-auto">
+                    Share your plant journey, get advice, and learn from fellow gardeners.
+                </p>
+            </div>
+
+            <!-- Create Post Section -->
+            <div class="mt-10 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Share Your Plant Story</h3>
+                <form id="community-post-form" class="space-y-4">
+                    <div>
+                        <label for="post-title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Title</label>
+                        <input type="text" id="post-title" name="title" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:text-white" placeholder="What's happening with your plants?">
+                    </div>
+                    <div>
+                        <label for="post-content" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Content</label>
+                        <textarea id="post-content" name="content" rows="4" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:text-white" placeholder="Share your plant care tips, ask questions, or show off your green friends!"></textarea>
+                    </div>
+                    <div>
+                        <label for="post-image" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Photo (Optional)</label>
+                        <input type="file" id="post-image" name="image" accept="image/*" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700">
+                    </div>
+                    <button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors">
+                        Share Post
+                    </button>
+                </form>
+            </div>
+
+            <!-- Community Posts -->
+            <div class="space-y-6">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Recent Posts</h3>
+                <div id="community-posts" class="space-y-6">
+                    <!-- Sample Post 1 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mr-3">
+                                <i data-feather="user" class="h-5 w-5 text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white">Sarah Green</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">2 hours ago</p>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">My Monstera is Thriving! 🌱</h3>
+                        <p class="text-gray-700 dark:text-gray-300 mb-4">After months of trial and error, I finally found the perfect spot for my Monstera deliciosa. It's putting out new leaves every week! The key was finding that sweet spot with bright, indirect light.</p>
+                        <div class="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+                            <button class="flex items-center hover:text-green-600"><i data-feather="heart" class="h-4 w-4 mr-1"></i> 12</button>
+                            <button class="flex items-center hover:text-green-600"><i data-feather="message-circle" class="h-4 w-4 mr-1"></i> 3</button>
+                            <button class="flex items-center hover:text-green-600"><i data-feather="share" class="h-4 w-4 mr-1"></i> Share</button>
+                        </div>
+                    </div>
+
+                    <!-- Sample Post 2 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mr-3">
+                                <i data-feather="user" class="h-5 w-5 text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white">PlantDad Mike</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">5 hours ago</p>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Help! Yellow Leaves on My Fiddle Leaf Fig</h3>
+                        <p class="text-gray-700 dark:text-gray-300 mb-4">My fiddle leaf fig has been dropping yellow leaves lately. I water it once a week and it gets good indirect light. Any suggestions? I'm worried I might be overwatering.</p>
+                        <div class="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+                            <button class="flex items-center hover:text-green-600"><i data-feather="heart" class="h-4 w-4 mr-1"></i> 8</button>
+                            <button class="flex items-center hover:text-green-600"><i data-feather="message-circle" class="h-4 w-4 mr-1"></i> 7</button>
+                            <button class="flex items-center hover:text-green-600"><i data-feather="share" class="h-4 w-4 mr-1"></i> Share</button>
+                        </div>
+                    </div>
+
+                    <!-- Sample Post 3 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mr-3">
+                                <i data-feather="user" class="h-5 w-5 text-purple-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white">GreenThumb Emma</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">1 day ago</p>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Propagation Success! 🎉</h3>
+                        <p class="text-gray-700 dark:text-gray-300 mb-4">Just successfully propagated my pothos! Here's my method: cut below a node, put in water for 2-3 weeks until roots appear, then transfer to soil. It's so rewarding to see new growth!</p>
+                        <div class="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+                            <button class="flex items-center hover:text-green-600"><i data-feather="heart" class="h-4 w-4 mr-1"></i> 15</button>
+                            <button class="flex items-center hover:text-green-600"><i data-feather="message-circle" class="h-4 w-4 mr-1"></i> 5</button>
+                            <button class="flex items-center hover:text-green-600"><i data-feather="share" class="h-4 w-4 mr-1"></i> Share</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Icon -->
+    <div class="fixed bottom-6 right-6">
+        <button class="h-14 w-14 rounded-full bg-green-600 shadow-lg flex items-center justify-center hover:bg-green-700" onclick="window.chatbot && window.chatbot.toggle()">
+            <i data-feather="message-circle" class="h-6 w-6 text-white"></i>
+        </button>
+    </div>
+
+    <script>
+        feather.replace();
+
+        // Community post form handling
+        document.getElementById('community-post-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('post-title').value;
+            const content = document.getElementById('post-content').value;
+            const image = document.getElementById('post-image').files[0];
+            
+            if (!title || !content) {
+                alert('Please fill in both title and content fields.');
+                return;
+            }
+            
+            // Create new post element
+            const newPost = document.createElement('div');
+            newPost.className = 'bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6';
+            newPost.innerHTML = `
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mr-3">
+                        <i data-feather="user" class="h-5 w-5 text-green-600"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-900 dark:text-white">You</h4>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Just now</p>
+                    </div>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">${title}</h3>
+                <p class="text-gray-700 dark:text-gray-300 mb-4">${content}</p>
+                <div class="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+                    <button class="flex items-center hover:text-green-600"><i data-feather="heart" class="h-4 w-4 mr-1"></i> 0</button>
+                    <button class="flex items-center hover:text-green-600"><i data-feather="message-circle" class="h-4 w-4 mr-1"></i> 0</button>
+                    <button class="flex items-center hover:text-green-600"><i data-feather="share" class="h-4 w-4 mr-1"></i> Share</button>
+                </div>
+            `;
+            
+            // Add to top of posts
+            const postsContainer = document.getElementById('community-posts');
+            postsContainer.insertBefore(newPost, postsContainer.firstChild);
+            
+            // Reset form
+            this.reset();
+            
+            // Replace feather icons
+            feather.replace();
+            
+            alert('Post shared successfully!');
+        });
+    </script>
+</body>
+</html>

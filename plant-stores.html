@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Stores - Green Thumb Guardian</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="js/api-config.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script src="js/theme-lang.js"></script>
+    <script src="js/test-integrations.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places&callback=initMap" async defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        #map {
+            height: 400px;
+            width: 100%;
+            border-radius: 0.5rem;
+        }
+        .store-card {
+            transition: all 0.3s ease;
+        }
+        .store-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900">
+    <!-- Navigation -->
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i data-feather="leaf" class="h-8 w-8 text-green-600"></i>
+                        <span class="ml-2 text-xl font-bold gradient-text">Green Thumb Guardian</span>
+                    </div>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:items-center md:space-x-8">
+                    <a href="index.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.home">Home</a>
+                    <a href="mygarden.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.garden">My Garden</a>
+                    <a href="plant-id.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.plantid">Plant ID</a>
+                    <a href="community.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.community">Community</a>
+                    <a href="plant-stores.html" class="text-green-600 px-3 py-2 font-medium border-b-2 border-green-600" data-translate="nav.stores">Stores</a>
+                    <div class="flex space-x-4">
+                        <a href="signin.html" class="px-4 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" data-translate="nav.signin">Sign In</a>
+                        <a href="signup.html" class="px-4 py-2 rounded-md text-sm font-medium text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700" data-translate="nav.signup">Sign Up</a>
+                    </div>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none">
+                        <i data-feather="menu" class="h-6 w-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Find Plant Stores</h1>
+                <p class="mt-1 text-gray-600">Discover nurseries, garden centers, and plant shops near you</p>
+            </div>
+            <div class="mt-4 md:mt-0">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i data-feather="map-pin" class="h-5 w-5 text-gray-400"></i>
+                    </div>
+                    <input type="text" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="Enter your location">
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Left Column - Filters -->
+            <div class="md:col-span-1">
+                <div class="bg-white shadow rounded-lg p-6 sticky top-6">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">Filters</h2>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-sm font-medium text-gray-900 mb-3">Categories</h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center">
+                                <input id="nursery" name="categories" type="checkbox" class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded">
+                                <label for="nursery" class="ml-3 text-sm text-gray-700">Nurseries</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="garden-center" name="categories" type="checkbox" class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded" checked>
+                                <label for="garden-center" class="ml-3 text-sm text-gray-700">Garden Centers</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="plant-shop" name="categories" type="checkbox" class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded" checked>
+                                <label for="plant-shop" class="ml-3 text-sm text-gray-700">Plant Shops</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="home-depot" name="categories" type="checkbox" class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded">
+                                <label for="home-depot" class="ml-3 text-sm text-gray-700">Home Improvement</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-sm font-medium text-gray-900 mb-3">Plant Types</h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center">
+                                <input id="indoor" name="plant-types" type="checkbox" class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded" checked>
+                                <label for="indoor" class="ml-3 text-sm text-gray-700">Indoor Plants</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="outdoor" name="plant-types" type="checkbox" class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded" checked>
+                                <label for="outdoor" class="ml-3 text-sm text-gray-700">Outdoor Plants</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="succulents" name="plant-types" type="checkbox" class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded" checked>
+                                <label for="succulents" class="ml-3 text-sm text-gray-700">Succulents</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="flowers" name="plant-types" type="checkbox" class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded">
+                                <label for="flowers" class="ml-3 text-sm text-gray-700">Flowers</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-sm font-medium text-gray-900 mb-3">Distance</h3>
+                        <select id="distance" name="distance" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md">
+                            <option>Within 5 miles</option>
+                            <option selected>Within 10 miles</option>
+                            <option>Within 20 miles</option>
+                            <option>Within 50 miles</option>
+                        </select>
+                    </div>
+                    
+                    <button class="w-full px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white font-medium rounded-md hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        Apply Filters
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Column - Map & Listings -->
+            <div class="md:col-span-2">
+                <!-- Map -->
+                <div class="bg-white shadow rounded-lg overflow-hidden mb-6">
+                    <div id="map"></div>
+                </div>
+
+                <!-- Store Listings -->
+                <div class="space-y-6">
+                    <h2 class="text-lg font-medium text-gray-900">12 Stores Found</h2>
+
+                    <!-- Store 1 -->
+                    <div class="store-card bg-white shadow rounded-lg overflow-hidden">
+                        <div class="p-6 md:flex md:items-start">
+                            <div class="md:flex-shrink-0 mb-4 md:mb-0 md:mr-6">
+                                <img class="h-40 w-full md:w-40 object-cover rounded" src="http://static.photos/retail/640x360/1" alt="Evergreen Nursery">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-gray-900">Evergreen Nursery</h3>
+                                        <div class="mt-1 flex items-center text-sm text-gray-500">
+                                            <i data-feather="map-pin" class="h-4 w-4 mr-1"></i>
+                                            <span>1.2 miles away • 123 Garden St, Alexandria</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i data-feather="star" class="h-4 w-4 text-yellow-400 fill-yellow-400"></i>
+                                        <span class="ml-1 text-sm font-medium text-gray-900">4.8</span>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded mr-2">Nursery</span>
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Succulents</span>
+                                </div>
+                                <p class="mt-3 text-gray-600">
+                                    Family-owned nursery with a wide variety of indoor and outdoor plants, specializing in succulents and rare tropical species. Knowledgeable staff and beautiful display gardens.
+                                </p>
+                                <div class="mt-4 flex items-center justify-between">
+                                    <div class="flex items-center text-sm text-gray-500">
+                                        <i data-feather="clock" class="h-4 w-4 mr-1"></i>
+                                        <span>Open now (8AM - 6PM)</span>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="px-3 py-1 bg-green-50 text-green-700 text-sm font-medium rounded-md hover:bg-green-100">
+                                            <i data-feather="phone" class="h-4 w-4 inline mr-1"></i> Call
+                                        </button>
+                                        <button class="px-3 py-1 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50">
+                                            <i data-feather="navigation" class="h-4 w-4 inline mr-1"></i> Directions
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Store 2 -->
+                    <div class="store-card bg-white shadow rounded-lg overflow-hidden">
+                        <div class="p-6 md:flex md:items-start">
+                            <div class="md:flex-shrink-0 mb-4 md:mb-0 md:mr-6">
+                                <img class="h-40 w-full md:w-40 object-cover rounded" src="http://static.photos/retail/640x360/2" alt="Urban Jungle">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-gray-900">Urban Jungle</h3>
+                                        <div class="mt-1 flex items-center text-sm text-gray-500">
+                                            <i data-feather="map-pin" class="h-4 w-4 mr-1"></i>
+                                            <span>2.5 miles away • 456 Plant Ave, Alexandria</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i data-feather="star" class="h-4 w-4 text-yellow-400 fill-yellow-400"></i>
+                                        <span class="ml-1 text-sm font-medium text-gray-900">4.6</span>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded mr-2">Plant Shop</span>
+                                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Indoor</span>
+                                </div>
+                                <p class="mt-3 text-gray-600">
+                                    Trendy urban plant shop with a curated selection of houseplants, pots, and plant care products. Great place to find unique statement plants and attend workshops.
+                                </p>
+                                <div class="mt-4 flex items-center justify-between">
+                                    <div class="flex items-center text-sm text-gray-500">
+                                        <i data-feather="clock" class="h-4 w-4 mr-1"></i>
+                                        <span>Open now (10AM - 7PM)</span>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="px-3 py-1 bg-green-50 text-green-700 text-sm font-medium rounded-md hover:bg-green-100">
+                                            <i data-feather="phone" class="h-4 w-4 inline mr-1"></i> Call
+                                        </button>
+                                        <button class="px-3 py-1 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50">
+                                            <i data-feather="navigation" class="h-4 w-4 inline mr-1"></i> Directions
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Store 3 -->
+                    <div class="store-card bg-white shadow rounded-lg overflow-hidden">
+                        <div class="p-6 md:flex md:items-start">
+                            <div class="md:flex-shrink-0 mb-4 md:mb-0 md:mr-6">
+                                <img class="h-40 w-full md:w-40 object-cover rounded" src="http://static.photos/retail/640x360/3" alt="Blooms Garden Center">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-gray-900">Blooms Garden Center</h3>
+                                        <div class="mt-1 flex items-center text-sm text-gray-500">
+                                            <i data-feather="map-pin" class="h-4 w-4 mr-1"></i>
+                                            <span>3.1 miles away • 789 Flower Rd, Alexandria</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i data-feather="star" class="h-4 w-4 text-yellow-400 fill-yellow-400"></i>
+                                        <span class="ml-1 text-sm font-medium text-gray-900">4.4</span>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded mr-2">Garden Center</span>
+                                    <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded">Outdoor</span>
+                                </div>
+                                <p class="mt-3 text-gray-600">
+                                    Large garden center with extensive selection of outdoor plants, trees, shrubs, and gardening supplies. Seasonal flowers and vegetable starters available.
+                                </p>
+                                <div class="mt-4 flex items-center justify-between">
+                                    <div class="flex items-center text-sm text-gray-500">
+                                        <i data-feather="clock" class="h-4 w-4 mr-1"></i>
+                                        <span>Open now (7AM - 5PM)</span>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="px-3 py-1 bg-green-50 text-green-700 text-sm font-medium rounded-md hover:bg-green-100">
+                                            <i data-feather="phone" class="h-4 w-4 inline mr-1"></i> Call
+                                        </button>
+                                        <button class="px-3 py-1 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50">
+                                            <i data-feather="navigation" class="h-4 w-4 inline mr-1"></i> Directions
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="flex items-center justify-between px-4 py-3 bg-white shadow rounded-lg">
+                        <div>
+                            <p class="text-sm text-gray-700">
+                                Showing <span class="font-medium">1</span> to <span class="font-medium">3</span> of <span class="font-medium">12</span> stores
+                            </p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200">
+                                Previous
+                            </button>
+                            <button class="px-3 py-1 bg-green-100 text-green-700 rounded-md hover:bg-green-200">
+                                1
+                            </button>
+                            <button class="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200">
+                                2
+                            </button>
+                            <button class="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200">
+                                3
+                            </button>
+                            <button class="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200">
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="md:flex md:items-center md:justify-between">
+                <div class="flex justify-center md:order-2 space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i data-feather="facebook" class="h-6 w-6"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i data-feather="instagram" class="h-6 w-6"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i data-feather="twitter" class="h-6 w-6"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i data-feather="youtube" class="h-6 w-6"></i>
+                    </a>
+                </div>
+                <div class="mt-8 md:mt-0 md:order-1">
+                    <p class="text-center text-base text-gray-400">
+                        &copy; 2023 Green Thumb Guardian. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chatbot Icon -->
+    <div class="fixed bottom-6 right-6">
+        <button class="h-14 w-14 rounded-full bg-green-600 shadow-lg flex items-center justify-center hover:bg-green-700" onclick="window.chatbot && window.chatbot.toggle()">
+            <i data-feather="message-circle" class="h-6 w-6 text-white"></i>
+        </button>
+    </div>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+        
+        let map;
+        let userLocation = null;
+        let plantStores = [];
+        
+        // Initialize map with error handling
+        async function initMap() {
+            try {
+                // Check if Google Maps API is loaded
+                if (typeof google === 'undefined' || !google.maps) {
+                    throw new Error('Google Maps API failed to load');
+                }
+                
+                // Initialize map with default location (Washington DC)
+                const defaultLocation = { lat: 38.8148, lng: -77.0569 };
+                
+                map = new google.maps.Map(document.getElementById("map"), {
+                    center: defaultLocation,
+                    zoom: 13,
+                    mapTypeControl: true,
+                    streetViewControl: false,
+                    fullscreenControl: true
+                });
+                
+                // Add error handling for map loading
+                google.maps.event.addListener(map, 'error', function(error) {
+                    console.error('Map error:', error);
+                    showMapError('Map failed to load properly');
+                });
+                
+                // Try to get user's current location
+                await getUserLocation();
+                
+                // Load nearby plant stores
+                await loadNearbyStores();
+                
+            } catch (error) {
+                console.error('Map initialization error:', error);
+                showMapError('Failed to initialize map. Please check your internet connection.');
+            }
+        }
+        
+        // Get user's current location
+        async function getUserLocation() {
+            return new Promise((resolve, reject) => {
+                if (!navigator.geolocation) {
+                    console.warn('Geolocation is not supported by this browser');
+                    resolve(null);
+                    return;
+                }
+                
+                const options = {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 300000 // 5 minutes
+                };
+                
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        userLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        
+                        // Update map center to user location
+                        map.setCenter(userLocation);
+                        map.setZoom(15);
+                        
+                        // Add user location marker
+                        new google.maps.Marker({
+                            position: userLocation,
+                            map: map,
+                            title: "Your Location",
+                            icon: {
+                                url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                            }
+                        });
+                        
+                        console.log('User location obtained:', userLocation);
+                        resolve(userLocation);
+                    },
+                    (error) => {
+                        console.warn('Geolocation error:', error.message);
+                        resolve(null);
+                    },
+                    options
+                );
+            });
+        }
+        
+        // Load nearby plant stores using Places API
+        async function loadNearbyStores() {
+            try {
+                const location = userLocation || { lat: 38.8148, lng: -77.0569 };
+                const radius = 10000; // 10km radius
+                
+                // Show loading state
+                document.getElementById('stores-list').innerHTML = '<div class="flex items-center justify-center p-4"><div class="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div><span class="ml-2">Finding nearby stores...</span></div>';
+                
+                // Use Google Places API to find plant stores
+                const service = new google.maps.places.PlacesService(map);
+                const request = {
+                    location: location,
+                    radius: radius,
+                    keyword: 'plant nursery garden center plant store',
+                    type: ['store', 'establishment']
+                };
+                
+                service.nearbySearch(request, (results, status) => {
+                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                        plantStores = results.filter(place => 
+                            place.name.toLowerCase().includes('nursery') ||
+                            place.name.toLowerCase().includes('garden') ||
+                            place.name.toLowerCase().includes('plant') ||
+                            place.types.includes('store')
+                        );
+                        
+                        displayStores(plantStores);
+                        addStoreMarkers(plantStores);
+                        
+                    } else if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+                        // Fallback to sample stores if no results found
+                        loadSampleStores();
+                    } else {
+                        throw new Error(`Places API error: ${status}`);
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Error loading stores:', error);
+                loadSampleStores(); // Fallback to sample data
+            }
+        }
+        
+        // Fallback to sample stores
+        function loadSampleStores() {
+            const sampleStores = [
+                {
+                    name: "Evergreen Nursery",
+                    vicinity: "123 Garden Street, Washington DC",
+                    rating: 4.5,
+                    price_level: 2,
+                    geometry: { location: { lat: 38.8148, lng: -77.0569 } },
+                    opening_hours: { open_now: true },
+                    types: ["store", "establishment"]
+                },
+                {
+                    name: "Urban Jungle",
+                    vicinity: "456 Plant Avenue, Washington DC",
+                    rating: 4.2,
+                    price_level: 3,
+                    geometry: { location: { lat: 38.7948, lng: -77.0369 } },
+                    opening_hours: { open_now: true },
+                    types: ["store", "establishment"]
+                },
+                {
+                    name: "Blooms Garden Center",
+                    vicinity: "789 Flower Lane, Washington DC",
+                    rating: 4.7,
+                    price_level: 2,
+                    geometry: { location: { lat: 38.8248, lng: -77.0169 } },
+                    opening_hours: { open_now: false },
+                    types: ["store", "establishment"]
+                }
+            ];
+            
+            plantStores = sampleStores;
+            displayStores(plantStores);
+            addStoreMarkers(plantStores);
+        }
+        
+        // Display stores in the list
+        function displayStores(stores) {
+            const storesList = document.getElementById('stores-list');
+            
+            if (stores.length === 0) {
+                storesList.innerHTML = '<div class="text-center p-8 text-gray-500">No plant stores found in your area. Try expanding your search radius.</div>';
+                return;
+            }
+            
+            const storesHTML = stores.map((store, index) => `
+                <div class="store-card bg-white rounded-lg shadow-md overflow-hidden mb-4 cursor-pointer" onclick="selectStore(${index})">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-lg font-bold text-gray-900">${store.name}</h3>
+                            <div class="flex items-center">
+                                <i data-feather="star" class="h-4 w-4 text-yellow-400 fill-yellow-400 mr-1"></i>
+                                <span class="text-sm font-medium">${store.rating || 'N/A'}</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-2">${store.vicinity}</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                ${store.price_level ? `<span>Price: ${'$'.repeat(store.price_level)}</span>` : ''}
+                                <span class="flex items-center">
+                                    <i data-feather="clock" class="h-4 w-4 mr-1"></i>
+                                    ${store.opening_hours ? (store.opening_hours.open_now ? 'Open Now' : 'Closed') : 'Hours Unknown'}
+                                </span>
+                            </div>
+                            <button class="px-3 py-1 bg-green-600 text-white text-sm rounded-md hover:bg-green-700">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            storesList.innerHTML = storesHTML;
+            feather.replace();
+        }
+        
+        // Add store markers to map
+        function addStoreMarkers(stores) {
+            const infowindow = new google.maps.InfoWindow();
+            
+            stores.forEach((store, index) => {
+                const marker = new google.maps.Marker({
+                    position: store.geometry.location,
+                    map: map,
+                    title: store.name,
+                    icon: {
+                        url: "https://maps.google.com/mapfiles/ms/icons/green-dot.png"
+                    }
+                });
+                
+                marker.addListener('click', () => {
+                    const content = `
+                        <div class="store-info p-2">
+                            <h3 class="font-bold text-lg">${store.name}</h3>
+                            <p class="text-gray-600">${store.vicinity}</p>
+                            <div class="mt-2">
+                                <div class="flex items-center">
+                                    <span class="text-yellow-400">★</span>
+                                    <span>${store.rating || 'N/A'}</span>
+                                </div>
+                                ${store.opening_hours ? `<p class="text-sm">${store.opening_hours.open_now ? 'Open Now' : 'Closed'}</p>` : ''}
+                            </div>
+                        </div>
+                    `;
+                    
+                    infowindow.setContent(content);
+                    infowindow.open(map, marker);
+                });
+                
+                // Store marker reference for selection
+                store.marker = marker;
+            });
+        }
+        
+        // Select store from list
+        function selectStore(index) {
+            const store = plantStores[index];
+            if (store && store.marker) {
+                // Center map on selected store
+                map.setCenter(store.geometry.location);
+                map.setZoom(16);
+                
+                // Open info window
+                const infowindow = new google.maps.InfoWindow();
+                infowindow.setContent(`
+                    <div class="store-info p-2">
+                        <h3 class="font-bold text-lg">${store.name}</h3>
+                        <p class="text-gray-600">${store.vicinity}</p>
+                        <div class="mt-2">
+                            <div class="flex items-center">
+                                <span class="text-yellow-400">★</span>
+                                <span>${store.rating || 'N/A'}</span>
+                            </div>
+                            ${store.opening_hours ? `<p class="text-sm">${store.opening_hours.open_now ? 'Open Now' : 'Closed'}</p>` : ''}
+                        </div>
+                    </div>
+                `);
+                infowindow.open(map, store.marker);
+            }
+        }
+        
+        // Show map error
+        function showMapError(message) {
+            document.getElementById('map').innerHTML = `
+                <div class="flex items-center justify-center h-full bg-gray-100 rounded-lg">
+                    <div class="text-center p-8">
+                        <i data-feather="map-pin" class="h-12 w-12 text-gray-400 mx-auto mb-4"></i>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Map Unavailable</h3>
+                        <p class="text-gray-600 mb-4">${message}</p>
+                        <button onclick="initMap()" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+            `;
+            feather.replace();
+        }
+        
+        // Search functionality
+        function searchStores() {
+            const searchInput = document.getElementById('search-input');
+            const query = searchInput.value.toLowerCase().trim();
+            
+            if (!query) {
+                displayStores(plantStores);
+                return;
+            }
+            
+            const filteredStores = plantStores.filter(store => 
+                store.name.toLowerCase().includes(query) ||
+                store.vicinity.toLowerCase().includes(query)
+            );
+            
+            displayStores(filteredStores);
+        }
+        
+        // Initialize search functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', searchStores);
+            }
+        });
+        
+        // Make initMap globally available
+        window.initMap = initMap;
+        window.selectStore = selectStore;
+        window.searchStores = searchStores;
+    </script>
+</body>
+</html>

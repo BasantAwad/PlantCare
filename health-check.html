@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Health Check - Green Thumb Guardian</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="js/api-config.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script src="js/theme-lang.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900">
+    <!-- Navigation -->
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i data-feather="leaf" class="h-8 w-8 text-green-600"></i>
+                        <a href="index.html" class="ml-2 text-xl font-bold gradient-text">Green Thumb Guardian</a>
+                    </div>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:items-center md:space-x-8">
+                    <a href="index.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.home">Home</a>
+                    <a href="mygarden.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.garden">My Garden</a>
+                    <a href="plant-id.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.plantid">Plant ID</a>
+                    <a href="community.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.community">Community</a>
+                    <a href="plant-stores.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.stores">Stores</a>
+                    <div class="flex space-x-4">
+                        <a href="signin.html" class="px-4 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" data-translate="nav.signin">Sign In</a>
+                        <a href="signup.html" class="px-4 py-2 rounded-md text-sm font-medium text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700" data-translate="nav.signup">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Plant Health Check
+            </h1>
+            <p class="text-xl text-gray-600 dark:text-gray-300">
+                Diagnose your plant's health issues with our AI-powered health assessment tool.
+            </p>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Upload Plant Photo</h2>
+            
+            <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center mb-6" id="upload-area">
+                <div class="upload-content">
+                    <i data-feather="upload" class="h-12 w-12 text-gray-400 mx-auto mb-4"></i>
+                    <p class="text-lg text-gray-600 dark:text-gray-300 mb-2">Drag & drop your plant photo here</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">or</p>
+                    <button class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors" onclick="document.getElementById('health-photo').click()">
+                        Choose File
+                    </button>
+                    <input type="file" id="health-photo" accept="image/*" class="hidden" onchange="handleHealthPhotoUpload(this)">
+                </div>
+                <div class="preview-content hidden">
+                    <img id="health-preview" class="max-w-full h-64 object-cover rounded-lg mx-auto mb-4">
+                    <button class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors" onclick="analyzeHealth()">
+                        Analyze Plant Health
+                    </button>
+                    <button class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors ml-2" onclick="resetUpload()">
+                        Change Photo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Results -->
+        <div id="analysis-results" class="hidden">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Health Analysis Results</h2>
+                <div id="health-status" class="mb-6">
+                    <!-- Results will be populated here -->
+                </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Treatment Recommendations</h2>
+                <div id="health-recommendations">
+                    <!-- Recommendations will be populated here -->
+                </div>
+            </div>
+
+            <!-- Care Tips -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Preventive Care Tips</h2>
+                <div id="care-tips">
+                    <!-- Care tips will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Common Issues -->
+        <div class="mt-16">
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">Common Plant Health Issues</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                    <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900 rounded-lg flex items-center justify-center mb-4">
+                        <i data-feather="alert-triangle" class="h-6 w-6 text-yellow-600"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Yellow Leaves</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">Often indicates overwatering, nutrient deficiency, or insufficient light.</p>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                    <div class="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center mb-4">
+                        <i data-feather="droplet" class="h-6 w-6 text-red-600"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Brown Spots</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">Can be caused by fungal infections, sunburn, or inconsistent watering.</p>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mb-4">
+                        <i data-feather="wind" class="h-6 w-6 text-blue-600"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Wilting</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">Usually a sign of underwatering, root rot, or environmental stress.</p>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mb-4">
+                        <i data-feather="bug" class="h-6 w-6 text-purple-600"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Pest Damage</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">Look for holes in leaves, sticky residue, or visible insects.</p>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                    <div class="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center mb-4">
+                        <i data-feather="sun" class="h-6 w-6 text-gray-600"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Light Issues</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">Too much or too little light can cause various health problems.</p>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                    <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mb-4">
+                        <i data-feather="thermometer" class="h-6 w-6 text-green-600"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Temperature Stress</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">Extreme temperatures can cause leaf drop and stunted growth.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Icon -->
+    <div class="fixed bottom-6 right-6">
+        <button class="h-14 w-14 rounded-full bg-green-600 shadow-lg flex items-center justify-center hover:bg-green-700" onclick="toggleChatbot()">
+            <i data-feather="message-circle" class="h-6 w-6 text-white"></i>
+        </button>
+    </div>
+
+    <script>
+        feather.replace();
+
+        function handleHealthPhotoUpload(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('health-preview').src = e.target.result;
+                    document.querySelector('.upload-content').classList.add('hidden');
+                    document.querySelector('.preview-content').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function analyzeHealth() {
+            // Show loading state
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = 'Analyzing...';
+            button.disabled = true;
+
+            // Simulate analysis (replace with actual API call)
+            setTimeout(() => {
+                showHealthResults();
+                button.textContent = originalText;
+                button.disabled = false;
+            }, 2000);
+        }
+
+        function showHealthResults() {
+            // Sample health analysis results
+            const results = {
+                status: 'moderate',
+                issues: ['Slight yellowing on lower leaves', 'Minor brown spots'],
+                recommendations: [
+                    'Reduce watering frequency - allow soil to dry between waterings',
+                    'Move plant to brighter location with indirect sunlight',
+                    'Apply balanced fertilizer every 2 weeks during growing season'
+                ],
+                careTips: [
+                    'Check soil moisture before watering',
+                    'Rotate plant weekly for even growth',
+                    'Monitor for pests regularly',
+                    'Maintain consistent temperature (65-75°F)'
+                ]
+            };
+
+            const statusElement = document.getElementById('health-status');
+            const recommendationsElement = document.getElementById('health-recommendations');
+            const careTipsElement = document.getElementById('care-tips');
+
+            // Status
+            const statusColor = results.status === 'good' ? 'green' : results.status === 'moderate' ? 'yellow' : 'red';
+            statusElement.innerHTML = `
+                <div class="flex items-center mb-4">
+                    <div class="w-4 h-4 bg-${statusColor}-500 rounded-full mr-3"></div>
+                    <span class="text-lg font-semibold text-gray-900 dark:text-white">Health Status: ${results.status.charAt(0).toUpperCase() + results.status.slice(1)}</span>
+                </div>
+                <div class="space-y-2">
+                    ${results.issues.map(issue => `<div class="flex items-center text-gray-700 dark:text-gray-300"><i data-feather="alert-circle" class="h-4 w-4 mr-2 text-${statusColor}-500"></i>${issue}</div>`).join('')}
+                </div>
+            `;
+
+            // Recommendations
+            recommendationsElement.innerHTML = `
+                <div class="space-y-4">
+                    ${results.recommendations.map(rec => `
+                        <div class="flex items-start">
+                            <i data-feather="check-circle" class="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0"></i>
+                            <span class="text-gray-700 dark:text-gray-300">${rec}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            // Care Tips
+            careTipsElement.innerHTML = `
+                <div class="space-y-4">
+                    ${results.careTips.map(tip => `
+                        <div class="flex items-start">
+                            <i data-feather="info" class="h-5 w-5 text-blue-500 mr-3 mt-0.5 flex-shrink-0"></i>
+                            <span class="text-gray-700 dark:text-gray-300">${tip}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            document.getElementById('analysis-results').classList.remove('hidden');
+            feather.replace();
+        }
+
+        function resetUpload() {
+            document.getElementById('health-photo').value = '';
+            document.querySelector('.upload-content').classList.remove('hidden');
+            document.querySelector('.preview-content').classList.add('hidden');
+            document.getElementById('analysis-results').classList.add('hidden');
+        }
+
+        function toggleChatbot() {
+            if (window.chatbot && window.chatbot.toggle) {
+                window.chatbot.toggle();
+            } else {
+                alert('Chatbot is loading... Please wait a moment and try again.');
+            }
+        }
+    </script>
+</body>
+</html>

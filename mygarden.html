@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Garden - Green Thumb Guardian</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="js/api-config.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script src="js/theme-lang.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .plant-card {
+            transition: all 0.3s ease;
+        }
+        .plant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900">
+    <!-- Navigation -->
+    <nav class="bg-white dark:bg-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i data-feather="leaf" class="h-8 w-8 text-green-600"></i>
+                        <span class="ml-2 text-xl font-bold gradient-text">Green Thumb Guardian</span>
+                    </div>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:items-center md:space-x-8">
+                    <a href="index.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.home">Home</a>
+                    <a href="mygarden.html" class="text-green-600 px-3 py-2 font-medium border-b-2 border-green-600" data-translate="nav.garden">My Garden</a>
+                    <a href="plant-id.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.plantid">Plant ID</a>
+                    <a href="community.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.community">Community</a>
+                    <a href="plant-stores.html" class="text-gray-900 dark:text-white hover:text-green-600 px-3 py-2 font-medium" data-translate="nav.stores">Stores</a>
+                    <div class="flex space-x-4">
+                        <div class="relative">
+                            <button class="p-1 text-gray-700 hover:text-gray-900">
+                                <i data-feather="bell" class="h-6 w-6"></i>
+                                <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+                            </button>
+                        </div>
+                        <div class="relative">
+                            <button class="flex items-center text-sm text-gray-700 hover:text-gray-900">
+                                <img class="h-8 w-8 rounded-full" src="http://static.photos/people/200x200/8" alt="User profile">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none">
+                        <i data-feather="menu" class="h-6 w-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-8">
+            <h1 class="text-2xl font-bold text-gray-900">My Plant Collection</h1>
+            <a href="addplant.html" class="mt-4 md:mt-0 px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white font-medium rounded-md hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                <i data-feather="plus" class="h-4 w-4 mr-2"></i> Add New Plant
+            </a>
+        </div>
+
+        <!-- Plant Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Plant 1 -->
+            <div class="plant-card bg-white rounded-lg shadow-md overflow-hidden">
+                <img class="w-full h-48 object-cover" src="http://static.photos/nature/640x360/1" alt="Monstera Deliciosa">
+                <div class="p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">Monstera Deliciosa</h3>
+                            <p class="text-sm text-gray-500">Added: 3 months ago</p>
+                        </div>
+                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Healthy</span>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i data-feather="droplet" class="h-4 w-4 mr-1"></i>
+                            <span>Water every 7 days</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500 mt-1">
+                            <i data-feather="sun" class="h-4 w-4 mr-1"></i>
+                            <span>Bright indirect light</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-between">
+                        <a href="plantdetail.html?id=1" class="text-sm font-medium text-green-600 hover:text-green-700">
+                            View Details
+                        </a>
+                        <button class="text-sm text-gray-500 hover:text-red-500">
+                            <i data-feather="trash-2" class="h-4 w-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plant 2 -->
+            <div class="plant-card bg-white rounded-lg shadow-md overflow-hidden">
+                <img class="w-full h-48 object-cover" src="http://static.photos/nature/640x360/2" alt="Snake Plant">
+                <div class="p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">Snake Plant</h3>
+                            <p class="text-sm text-gray-500">Added: 5 months ago</p>
+                        </div>
+                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Healthy</span>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i data-feather="droplet" class="h-4 w-4 mr-1"></i>
+                            <span>Water every 14 days</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500 mt-1">
+                            <i data-feather="sun" class="h-4 w-4 mr-1"></i>
+                            <span>Low to bright light</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-between">
+                        <a href="plantdetail.html?id=2" class="text-sm font-medium text-green-600 hover:text-green-700">
+                            View Details
+                        </a>
+                        <button class="text-sm text-gray-500 hover:text-red-500">
+                            <i data-feather="trash-2" class="h-4 w-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plant 3 -->
+            <div class="plant-card bg-white rounded-lg shadow-md overflow-hidden">
+                <img class="w-full h-48 object-cover" src="http://static.photos/nature/640x360/3" alt="Fiddle Leaf Fig">
+                <div class="p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">Fiddle Leaf Fig</h3>
+                            <p class="text-sm text-gray-500">Added: 2 weeks ago</p>
+                        </div>
+                        <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">Needs Care</span>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i data-feather="droplet" class="h-4 w-4 mr-1"></i>
+                            <span>Water every 10 days</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500 mt-1">
+                            <i data-feather="sun" class="h-4 w-4 mr-1"></i>
+                            <span>Bright indirect light</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-between">
+                        <a href="plantdetail.html?id=3" class="text-sm font-medium text-green-600 hover:text-green-700">
+                            View Details
+                        </a>
+                        <button class="text-sm text-gray-500 hover:text-red-500">
+                            <i data-feather="trash-2" class="h-4 w-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Plant Card -->
+            <div class="plant-card bg-white rounded-lg shadow-md overflow-hidden border-2 border-dashed border-gray-300 hover:border-green-500 flex items-center justify-center">
+                <a href="addplant.html" class="flex flex-col items-center p-6 text-green-600 hover:text-green-700">
+                    <div class="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center mb-3">
+                        <i data-feather="plus" class="h-6 w-6"></i>
+                    </div>
+                    <span class="font-medium">Add New Plant</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Upcoming Tasks -->
+        <div class="mt-12">
+            <h2 class="text-xl font-bold text-gray-900 mb-6">Upcoming Care Tasks</h2>
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <div class="divide-y divide-gray-200">
+                    <!-- Task 1 -->
+                    <div class="p-4 flex items-center">
+                        <div class="flex-shrink-0 h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                            <i data-feather="droplet" class="h-5 w-5 text-green-600"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-sm font-medium text-gray-900">Water Monstera Deliciosa</h3>
+                            <p class="text-sm text-gray-500">Due tomorrow</p>
+                        </div>
+                        <button class="ml-auto px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-md hover:bg-green-200">
+                            Mark Complete
+                        </button>
+                    </div>
+                    <!-- Task 2 -->
+                    <div class="p-4 flex items-center">
+                        <div class="flex-shrink-0 h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center">
+                            <i data-feather="alert-triangle" class="h-5 w-5 text-yellow-600"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-sm font-medium text-gray-900">Check Fiddle Leaf Fig</h3>
+                            <p class="text-sm text-gray-500">Health alert - yellowing leaves</p>
+                        </div>
+                        <button class="ml-auto px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-md hover:bg-yellow-200">
+                            View Issue
+                        </button>
+                    </div>
+                    <!-- Task 3 -->
+                    <div class="p-4 flex items-center">
+                        <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                            <i data-feather="calendar" class="h-5 w-5 text-blue-600"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-sm font-medium text-gray-900">Monthly Fertilization</h3>
+                            <p class="text-sm text-gray-500">Due in 3 days for all plants</p>
+                        </div>
+                        <button class="ml-auto px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-md hover:bg-blue-200">
+                            Snooze
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="md:flex md:items-center md:justify-between">
+                <div class="flex justify-center md:order-2 space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i data-feather="facebook" class="h-6 w-6"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i data-feather="instagram" class="h-6 w-6"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i data-feather="twitter" class="h-6 w-6"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i data-feather="youtube" class="h-6 w-6"></i>
+                    </a>
+                </div>
+                <div class="mt-8 md:mt-0 md:order-1">
+                    <p class="text-center text-base text-gray-400">
+                        &copy; 2023 Green Thumb Guardian. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chatbot Icon -->
+    <div class="fixed bottom-6 right-6">
+        <button class="h-14 w-14 rounded-full bg-green-600 shadow-lg flex items-center justify-center hover:bg-green-700">
+            <i data-feather="message-circle" class="h-6 w-6 text-white"></i>
+        </button>
+    </div>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+
+        // Simple animation for plant cards on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.plant-card');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = `all 0.5s ease ${index * 0.1}s`;
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
